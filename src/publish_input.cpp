@@ -59,10 +59,12 @@ namespace vive_input {
             return ContrCommands::GRAB;
         }
         else if (button == "gripper") {
-            return ContrCommands::RESET;
+            return ContrCommands::CLUTCH;
+            // return ContrCommands::RESET;
         }
         else if (button == "menu") {
-            return ContrCommands::CLUTCH;
+            return ContrCommands::NONE;
+            // return ContrCommands::CLUTCH;
         }
         else if (button == "trackpad") {
             return ContrCommands::OFFSET;
@@ -684,8 +686,8 @@ namespace vive_input {
 
         goal.header.stamp = ros::Time::now();
         goal.ee_poses.push_back(pose);
-        goal.ee_poses.push_back(pose_cam);
-        goal.ee_poses.push_back(pose_head);
+        // goal.ee_poses.push_back(pose_cam);
+        // goal.ee_poses.push_back(pose_head);
 
         std_msgs::Bool reset;
         reset.data = input.reset.is_on();
@@ -714,7 +716,6 @@ namespace vive_input {
         poll_fds.events = POLLIN; // Wait until there's data to read
 
         spinner.start();
-        // std::thread get_keyboard_input(&App::getKeyboardInput, this);
 
         while (ros::ok())
         {
@@ -724,7 +725,6 @@ namespace vive_input {
             }
         }
 
-        // get_keyboard_input.join();
         spinner.stop();
 
         shutdown(in_socket.socket, SHUT_RDWR);
