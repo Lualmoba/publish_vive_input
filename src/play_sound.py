@@ -11,7 +11,6 @@ class SoundPlayer:
         pygame.mixer.init()
 
         self.assets_folder = rospy.get_param("~assets_folder", None)
-        self.command_sub = rospy.Subscriber("/play_sound/sound", String, self.handleSound)
 
         if self.assets_folder is None:
             rospy.signal_shutdown("Need assets folder location")
@@ -21,6 +20,7 @@ class SoundPlayer:
         self.addSound('fail', "fail.wav")
         self.addSound('success', "success.wav")
 
+        self.command_sub = rospy.Subscriber("/play_sound/sound", String, self.handleSound)
 
     def addSound(self, trigger_str, file_name):
         self.sounds[trigger_str] = pygame.mixer.Sound(self.assets_folder + file_name)    
