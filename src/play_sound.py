@@ -3,7 +3,7 @@
 import pygame
 
 import rospy
-from std_msgs.msg import Bool
+from std_msgs.msg import String
 
 class SoundPlayer:
 
@@ -11,18 +11,23 @@ class SoundPlayer:
         pygame.mixer.init()
 
         self.assets_folder = rospy.get_param("~assets_folder", None)
+        self.command_sub = rospy.Subscriber("/play_sound/sound", String, self.handleSound)
 
         if self.assets_folder is None:
             rospy.signal_shutdown("Need assets folder location")
             return
 
-        self.collision_sound = pygame.mixer.Sound(self.assets_folder + "buzzer_fail.wav")
-        self.collision_sub = rospy.Subscriber("/play_sound/collision", Bool, self.collisionCb)
+        self.sounds = {}
+        self.addSound('fail', "fail.wav")
+        self.addSound('success', "success.wav")
 
 
-    def collisionCb(self, msg: Bool):
-        if msg.data:
-            self.collision_sound.play()
+    def addSound(self, trigger_str, file_name):
+        self.sounds[trigger_str] = pygame.mixer.Sound(self.assets_folder + file_name)    
+
+    def handleSound(self, msg: String):
+        if msg.data in self.sounds:
+            self.sounds[msg.data].play()
 
 
 if __name__ == "__main__":
