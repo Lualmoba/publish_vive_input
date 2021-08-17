@@ -463,36 +463,33 @@ namespace vive_input {
                             {
                                 bool raw_bool(j[controller][button]["boolean"]);
                                 input.toggle = raw_bool;
-                                // input.manual_offset.x = j[controller][button]["2d"]["x"];
-                                // input.manual_offset.y = j[controller][button]["2d"]["y"];
-                                // input.manual_offset.z = 0.0;
+                                input.manual_adjust.x = j[controller][button]["2d"]["x"];
+                                input.manual_adjust.y = j[controller][button]["2d"]["y"];
+                                input.manual_adjust.z = 0.0;
 
-                                if (input.toggle.confirm_flip_on()) {
-                                    out_msg["toggle"] = true;
+                                // if (input.toggle.confirm_flip_on()) {
+                                //     out_msg["toggle"] = true;
 
-                                    std_msgs::Bool toggle;
-                                    toggle.data = out_msg["toggle"];
-                                    toggle_pub.publish(toggle);
-                                }
-
-                                // Available commands when not in clutching mode
-                                // if (!input.clutching.is_on() && input.manual_adj.confirm_flip_on()) {
-                                //     if (input.manual_offset.x >= 0.5) {
-                                //         out_msg["primary_next"] = true;
-                                //     }
-                                //     else if (input.manual_offset.x <= -0.5) {
-                                //         out_msg["primary_prev"] = true;
-                                //     }
-                                //     else if (input.manual_offset.y >= 0.5) {
-                                //         out_msg["pip_prev"] = true;
-                                //     }
-                                //     else if (input.manual_offset.y <= -0.5) {
-                                //         out_msg["pip_next"] = true;
-                                //     }
-                                //     else {
-                                //         out_msg["pip_toggle"] = true;
-                                //     }
+                                //     std_msgs::Bool toggle;
+                                //     toggle.data = out_msg["toggle"];
+                                //     toggle_pub.publish(toggle);
                                 // }
+
+                                float threshold_dist(0.25);
+                                if (input.toggle.confirm_flip_on()) {
+                                    if (input.manual_adjust.x >= threshold_dist) {
+                                        out_msg["active_right"] = true;
+                                    }
+                                    else if (input.manual_adjust.x <= -threshold_dist) {
+                                        out_msg["active_left"] = true;
+                                    }
+                                    else if (input.manual_adjust.y >= threshold_dist) {
+                                        out_msg["active_up"] = true;
+                                    }
+                                    else if (input.manual_adjust.y <= -threshold_dist) {
+                                        out_msg["active_down"] = true;
+                                    }
+                                }
 
                                 right_contr.button4.name = "trackpad";
                                 right_contr.button4.has_boolean = true;
