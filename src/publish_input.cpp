@@ -475,18 +475,18 @@ namespace vive_input {
                                 //     toggle_pub.publish(toggle);
                                 // }
 
-                                float threshold_dist(0.25);
+                                float x_threshold(0.2);
+                                float y_threshold(-0.4);
                                 if (input.toggle.confirm_flip_on()) {
-                                    if (input.manual_adjust.x >= threshold_dist) {
-                                        out_msg["active_right"] = true;
+                                    if (input.manual_adjust.x >= x_threshold 
+                                            && input.manual_adjust.y > y_threshold) {
+                                        out_msg["active_up_right"] = true;
                                     }
-                                    else if (input.manual_adjust.x <= -threshold_dist) {
-                                        out_msg["active_left"] = true;
+                                    else if (input.manual_adjust.x <= -x_threshold
+                                            && input.manual_adjust.y > y_threshold) {
+                                        out_msg["active_up_left"] = true;
                                     }
-                                    else if (input.manual_adjust.y >= threshold_dist) {
-                                        out_msg["active_up"] = true;
-                                    }
-                                    else if (input.manual_adjust.y <= -threshold_dist) {
+                                    else if (input.manual_adjust.y <= y_threshold) {
                                         out_msg["active_down"] = true;
                                     }
                                 }
@@ -499,7 +499,7 @@ namespace vive_input {
                         
                             default:
                             {
-                                out_msg[button] = button_it.value();
+                                // out_msg[button] = button_it.value();
                             }   break;
                         }
                     }
